@@ -40,6 +40,13 @@ register_bitfields! {
         /// - This bit does not indicate if there is data in the transmit shift register.
         TXFE OFFSET(7) NUMBITS(1) [],
 
+        /// Transmit FIFO full. The meaning of this bit depends on the state of the FEN bit in the
+        /// LCR_H Register.
+        ///
+        /// - If the FIFO is disabled, this bit is set when the transmit holding register is full.
+        /// - If the FIFO is enabled, the TXFF bit is set when the transmit FIFO is full.
+        TXFF OFFSET(5) NUMBITS(1) [],
+
         /// Receive FIFO empty. The meaning of this bit depends on the state of the FEN bit in the
         /// LCR_H Register.
         ///
@@ -235,7 +242,7 @@ impl PL011UartInner {
         //
         // Set the baud rate, 8N1 and FIFO endabled.
         self.registers.IBRD.write(IBRD::BAUD_DIVINT.val(3));
-        self.registers.IBRD.write(IBRD::BAUD_DIVFRAC.val(16));
+        self.registers.FBRD.write(FBRD::BAUD_DIVFRAC.val(16));
         self.registers
             .LCR_H
             .write(LCR_H::WLEN::EightBit + LCR_H::FEN::FifosEnabled);
@@ -342,7 +349,7 @@ use synchronization::interface::Mutex;
 
 impl driver::interface::DeviceDriver for PL011Uart {
     fn compatible(&self) -> &'static str {
-        self.COMPATIBLE
+        Self::COMPATIBLE
     }
 
     unsafe fn init(&self) -> Result<(), &'static str> {

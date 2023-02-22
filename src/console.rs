@@ -52,7 +52,7 @@ pub mod interface {
     }
 
     /// Trait alias for a full-fledged console
-    pub trait All: Write + Statistics {}
+    pub trait All: Write + Read + Statistics {}
 }
 
 //--------------------------------------------------------------------------------------------------

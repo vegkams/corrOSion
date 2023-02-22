@@ -84,7 +84,7 @@ impl DriverManagerInner {
 impl DeviceDriverDescriptor {
     /// Create an instance.
     pub fn new(
-        device_driver: &'static (dyn interface::DeviceDriver + sync),
+        device_driver: &'static (dyn interface::DeviceDriver + Sync),
         post_init_callback: Option<DeviceDriverPostInitCallback>,
     ) -> Self {
         Self {

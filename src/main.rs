@@ -162,7 +162,7 @@ fn kernel_main() -> ! {
     // Discard any spurious received characters before going into echo mode.
     console().clear_rx();
     loop {
-        let c = console.read_char();
+        let c = console().read_char();
         console().write_char(c);
     }
 }
