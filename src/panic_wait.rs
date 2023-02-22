@@ -6,7 +6,6 @@
 use crate::{cpu, println};
 use core::panic::PanicInfo;
 
-
 //--------------------------------------------------------------------------------------------------
 // Private Code
 //--------------------------------------------------------------------------------------------------
@@ -47,7 +46,7 @@ fn panic(info: &PanicInfo) -> ! {
 
     let (location, line, column) = match info.location() {
         Some(loc) => (loc.file(), loc.line(), loc.column()),
-        _         => ("???", 0, 0)
+        _ => ("???", 0, 0),
     };
 
     println!(

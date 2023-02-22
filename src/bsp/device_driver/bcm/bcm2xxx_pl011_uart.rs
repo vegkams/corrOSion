@@ -81,10 +81,10 @@ register_bitfields! {
         ],
 
         /// Enable FIFOs:
-        /// 
+        ///
         /// 0 = FIFOs are disabled (character mode) that is, the FIFOs become 1-byte-deep holding
         /// registers.
-        /// 
+        ///
         /// 1 = Transmit and receive FIFO buffers are enabled (FIFO mode).
         FEN OFFSET(4) NUMBITS(1) [
             FifosDisabled = 0,
@@ -113,10 +113,10 @@ register_bitfields! {
         ],
 
         /// UART enable:
-        /// 
+        ///
         /// 0 = UART is disabled. If the UART is disabled in the middle of transmission or
         /// reception, it completes the current character before stopping.
-        /// 
+        ///
         /// 1 = The UART is enabled. Data transmission and reception occurs for either UART signals
         /// or SIR signals depending on the setting of the SIREN bit
         UARTEN OFFSET(0) NUMBITS(1) [
@@ -181,10 +181,10 @@ pub struct PL011Uart {
 
 impl PL011UartInner {
     /// Create an instance.
-    /// 
+    ///
     /// # Safety
-    /// 
-    /// -  The user must ensure to provide a correct MMIO start address.
+    ///
+    /// - The user must ensure to provide a correct MMIO start address.
     pub const unsafe fn new(mmio_start_addr: usize) -> Self {
         Self {
             registers: Registers::new(mmio_start_addr),
@@ -239,7 +239,7 @@ impl PL011UartInner {
         self.registers
             .LCR_H
             .write(LCR_H::WLEN::EightBit + LCR_H::FEN::FifosEnabled);
-        
+
         // Turn the UART on.
         self.registers
             .CR
@@ -324,9 +324,9 @@ impl PL011Uart {
     pub const COMPATIBLE: &'static str = "BCM PL011 UART";
 
     /// Create an instance.
-    /// 
+    ///
     /// # Safety
-    /// 
+    ///
     /// - The user must ensure to provide a correct MMIO start address.
     pub const unsafe fn new(mmio_start_addr: usize) -> Self {
         Self {

@@ -123,9 +123,9 @@ mod print;
 mod synchronization;
 
 /// Early init code.
-/// 
+///
 /// # Safety
-/// 
+///
 ///  - Only a single core must be active and running in this function.
 ///  - The init calls in this function must appear in the correct order.
 unsafe fn kernel_init() -> ! {
@@ -166,4 +166,3 @@ fn kernel_main() -> ! {
         console().write_char(c);
     }
 }
-

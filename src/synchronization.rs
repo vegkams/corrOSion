@@ -31,10 +31,10 @@ pub mod interface {
 }
 
 /// A pseudo-lock for teaching purposes.
-/// 
+///
 /// In contrast to a real Mutex implementation, does not protect against concurrent access from
 /// other cores to the contained data. This part is preserved for later lessons.
-/// 
+///
 /// The lock will only be used as long as it is safe to do so, i.e. as long as the kernel is
 /// executing single-threaded, aka only running on a single core with interrupts disabled.
 pub struct NullLock<T>

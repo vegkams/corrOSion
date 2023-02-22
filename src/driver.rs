@@ -32,9 +32,9 @@ pub mod interface {
         fn compatible(&self) -> &'static str;
 
         /// Called by the kernel to bring up the device.
-        /// 
+        ///
         /// # Safety
-        /// 
+        ///
         /// - During init, drivers might do stuff with system-wide impact.
         unsafe fn init(&self) -> Result<(), &'static str> {
             Ok(())
@@ -127,9 +127,9 @@ impl DriverManager {
     }
 
     /// Fully initialize all drivers.
-    /// 
+    ///
     /// # Safety
-    /// 
+    ///
     /// - During init, drivers might do stuff with system-wide impact
     pub unsafe fn init_drivers(&self) {
         self.for_each_descriptor(|descriptor| {

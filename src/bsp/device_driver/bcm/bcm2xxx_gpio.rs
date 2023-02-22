@@ -43,7 +43,7 @@ register_bitfields! {
     ],
 
     /// GPIO Pull-up/down Register
-    /// 
+    ///
     /// BCM2837 only
     GPPUD [
         /// Controls the actuation of the internal pull-up/down control line to ALL the GPIO pins.
@@ -55,7 +55,7 @@ register_bitfields! {
     ],
 
     /// GPIO Pull-up/down Clock Register 0
-    /// 
+    ///
     /// BCM2837 only.
     GPPUDCLK0 [
         /// Pin 15
@@ -72,7 +72,7 @@ register_bitfields! {
     ],
 
     /// GPIO Pull-up/down Register 0
-    /// 
+    ///
     /// BCM2711 only.
     GPIO_PUP_PDN_CNTRL_REG0 [
         /// Pin 15
@@ -125,9 +125,9 @@ pub struct GPIO {
 
 impl GPIOInner {
     /// Create an instance.
-    /// 
+    ///
     /// # Safety
-    /// 
+    ///
     /// - The user must ensure to provide a correct MMIO start address.
     pub const unsafe fn new(mmio_start_addr: usize) -> Self {
         Self {
@@ -172,7 +172,7 @@ impl GPIOInner {
     }
 
     /// Map PL011 UART as standard output.
-    /// 
+    ///
     /// TX to pin 14
     /// RX to pin 15
     pub fn map_pl011_uart(&mut self) {
@@ -198,9 +198,9 @@ impl GPIO {
     pub const COMPATIBLE: &'static str = "BCM GPIO";
 
     /// Create an instance.
-    /// 
+    ///
     /// # safety
-    /// 
+    ///
     /// - The user must ensure to provide a correct MMIO start address.
     pub const unsafe fn new(mmio_start_addr: usize) -> Self {
         Self {

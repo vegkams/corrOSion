@@ -3,7 +3,6 @@
 // Copyright (c) 2018-2022 Andre Richter <andre.o.richter@gmail.com>
 
 //! BSP driver support.
-//! 
 use super::memory::map::mmio;
 use crate::{bsp::device_driver, console, driver as generic_driver};
 use core::sync::atomic::{AtomicBool, Ordering};
@@ -12,7 +11,7 @@ use core::sync::atomic::{AtomicBool, Ordering};
 // Global instances
 //-------------------------------------------------------------------------------------------------
 
-static PL011_UART: device_driver::PL011Uart = 
+static PL011_UART: device_driver::PL011Uart =
     unsafe { device_driver::PL011Uart::new(mmio::PL011_UART_START) };
 static GPIO: device_driver::GPIO = unsafe { device_driver::GPIO::new(mmio::GPIO_START) };
 
@@ -52,11 +51,10 @@ fn driver_gpio() -> Result<(), &'static str> {
 // Public Code
 //-------------------------------------------------------------------------------------------------
 
-
 /// Initialize the driver subsystem.
-/// 
+///
 /// # Safety
-/// 
+///
 /// See child function calls.
 pub unsafe fn init() -> Result<(), &'static str> {
     static INIT_DONE: AtomicBool = AtomicBool::new(false);

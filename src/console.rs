@@ -19,7 +19,7 @@ pub mod interface {
     pub trait Write {
         /// Write a single character.
         fn write_char(&self, c: char);
-        
+
         /// Write a Rust format string.
         fn write_fmt(&self, args: fmt::Arguments) -> fmt::Result;
 
@@ -70,10 +70,9 @@ use synchronization::interface::Mutex;
 /// Register a new console.
 pub fn register_console(new_console: &'static (dyn interface::All + Sync)) {
     CUR_CONSOLE.lock(|con| *con = new_console);
-
 }
 /// Return a reference to the currently registered console.
-/// 
+///
 /// This is the global console used by all printing macros.
 pub fn console() -> &'static dyn interface::All {
     CUR_CONSOLE.lock(|con| *con)
