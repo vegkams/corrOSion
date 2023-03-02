@@ -2,7 +2,8 @@
 //
 // Copyright (c) 2018-2022 Andre Richter <andre.o.richter@gmail.com>
 
-//! A panic handler that infinitely waits
+//! A panic handler that infinitely waits.
+
 use crate::{cpu, println};
 use core::panic::PanicInfo;
 
@@ -36,7 +37,7 @@ fn panic_prevent_reenter() {
         return;
     }
 
-    cpu::wait_forever();
+    cpu::wait_forever()
 }
 
 #[panic_handler]
@@ -50,8 +51,8 @@ fn panic(info: &PanicInfo) -> ! {
     };
 
     println!(
-        "Kernel panic!\n\n
-        Panic location:\n        File '{}', line {}, column {}\n\n
+        "Kernel panic!\n\n\
+        Panic location:\n      File '{}', line {}, column {}\n\n\
         {}",
         location,
         line,

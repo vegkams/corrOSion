@@ -9,9 +9,9 @@ use crate::{
     synchronization::{interface::Mutex, NullLock},
 };
 
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Private Definitions
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 const NUM_DRIVERS: usize = 5;
 
@@ -20,9 +20,9 @@ struct DriverManagerInner {
     descriptors: [Option<DeviceDriverDescriptor>; NUM_DRIVERS],
 }
 
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Public Definitions
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 /// Driver interfaces.
 pub mod interface {
@@ -42,7 +42,7 @@ pub mod interface {
     }
 }
 
-/// Type to be used as optional callback after a drivers init() has run.
+/// Tpye to be used as an optional callback after a driver's init() has run.
 pub type DeviceDriverPostInitCallback = unsafe fn() -> Result<(), &'static str>;
 
 /// A descriptor for device drivers.
@@ -52,20 +52,20 @@ pub struct DeviceDriverDescriptor {
     post_init_callback: Option<DeviceDriverPostInitCallback>,
 }
 
-/// Provices device driver management functions.
+/// Provides device driver management functions.
 pub struct DriverManager {
     inner: NullLock<DriverManagerInner>,
 }
 
-//-------------------------------------------------------------------------------------------------
-// Global Instances
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
+// Global instances
+//--------------------------------------------------------------------------------------------------
 
 static DRIVER_MANAGER: DriverManager = DriverManager::new();
 
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Private Code
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 impl DriverManagerInner {
     /// Create an instance.
@@ -77,9 +77,9 @@ impl DriverManagerInner {
     }
 }
 
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Public Code
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 impl DeviceDriverDescriptor {
     /// Create an instance.
@@ -100,7 +100,7 @@ pub fn driver_manager() -> &'static DriverManager {
 }
 
 impl DriverManager {
-    /// Create an instance
+    /// Create an instance.
     pub const fn new() -> Self {
         Self {
             inner: NullLock::new(DriverManagerInner::new()),
@@ -130,7 +130,7 @@ impl DriverManager {
     ///
     /// # Safety
     ///
-    /// - During init, drivers might do stuff with system-wide impact
+    /// - During init, drivers might do stuff with system-wide impact.
     pub unsafe fn init_drivers(&self) {
         self.for_each_descriptor(|descriptor| {
             // 1. Initialize driver.
@@ -149,7 +149,7 @@ impl DriverManager {
                         "Error during driver post-init callback: {}: {}",
                         descriptor.device_driver.compatible(),
                         x
-                    )
+                    );
                 }
             }
         });

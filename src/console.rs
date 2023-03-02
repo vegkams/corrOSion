@@ -15,6 +15,7 @@ use crate::synchronization::{self, NullLock};
 /// Console interfaces.
 pub mod interface {
     use core::fmt;
+
     /// Console write functions.
     pub trait Write {
         /// Write a single character.
@@ -34,13 +35,13 @@ pub mod interface {
             ' '
         }
 
-        /// Clear TX buffers, if any.
+        /// Clear RX buffers, if any.
         fn clear_rx(&self);
     }
 
-    /// Console statistics
+    /// Console statistics.
     pub trait Statistics {
-        /// Return the number of characters written
+        /// Return the number of characters written.
         fn chars_written(&self) -> usize {
             0
         }
@@ -51,7 +52,7 @@ pub mod interface {
         }
     }
 
-    /// Trait alias for a full-fledged console
+    /// Trait alias for a full-fledged console.
     pub trait All: Write + Read + Statistics {}
 }
 
@@ -71,6 +72,7 @@ use synchronization::interface::Mutex;
 pub fn register_console(new_console: &'static (dyn interface::All + Sync)) {
     CUR_CONSOLE.lock(|con| *con = new_console);
 }
+
 /// Return a reference to the currently registered console.
 ///
 /// This is the global console used by all printing macros.

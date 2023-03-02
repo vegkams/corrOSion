@@ -7,16 +7,16 @@
 use crate::console;
 use core::fmt;
 
-//-------------------------------------------------------------------------------------------------
-// Public code
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
+// Public Code
+//--------------------------------------------------------------------------------------------------
 
 #[doc(hidden)]
 pub fn _print(args: fmt::Arguments) {
     console::console().write_fmt(args).unwrap();
 }
 
-/// Prints without a newline
+/// Prints without a newline.
 ///
 /// Carbon copy from <https://doc.rust-lang.org/src/std/macros.rs.html>
 #[macro_export]

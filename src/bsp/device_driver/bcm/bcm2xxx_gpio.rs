@@ -14,13 +14,15 @@ use tock_registers::{
     registers::ReadWrite,
 };
 
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Private Definitions
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // GPIO registers.
 //
-// Descriptions from datasheets
+// Descriptions taken from
+// - https://github.com/raspberrypi/documentation/files/1888662/BCM2837-ARM-Peripherals.-.Revised.-.V2-1.pdf
+// - https://datasheets.raspberrypi.org/bcm2711/bcm2711-peripherals.pdf
 register_bitfields! {
     u32,
 
@@ -30,21 +32,21 @@ register_bitfields! {
         FSEL15 OFFSET(15) NUMBITS(3) [
             Input = 0b000,
             Output = 0b001,
-            AltFunc0 = 0b100 // PL011 UART RX
+            AltFunc0 = 0b100  // PL011 UART RX
 
         ],
+
         /// Pin 14
-        FSEL14 OFFSET(14) NUMBITS(3) [
+        FSEL14 OFFSET(12) NUMBITS(3) [
             Input = 0b000,
             Output = 0b001,
-            AltFunc0 = 0b100 // PL011 UART TX
-
+            AltFunc0 = 0b100  // PL011 UART TX
         ]
     ],
 
     /// GPIO Pull-up/down Register
     ///
-    /// BCM2837 only
+    /// BCM2837 only.
     GPPUD [
         /// Controls the actuation of the internal pull-up/down control line to ALL the GPIO pins.
         PUD OFFSET(0) NUMBITS(2) [
@@ -61,7 +63,7 @@ register_bitfields! {
         /// Pin 15
         PUDCLK15 OFFSET(15) NUMBITS(1) [
             NoEffect = 0,
-            AssertClock = 1,
+            AssertClock = 1
         ],
 
         /// Pin 14
@@ -71,7 +73,7 @@ register_bitfields! {
         ]
     ],
 
-    /// GPIO Pull-up/down Register 0
+    /// GPIO Pull-up / Pull-down Register 0
     ///
     /// BCM2711 only.
     GPIO_PUP_PDN_CNTRL_REG0 [
@@ -110,18 +112,18 @@ struct GPIOInner {
     registers: Registers,
 }
 
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Public Definitions
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 /// Representation of the GPIO HW.
 pub struct GPIO {
     inner: NullLock<GPIOInner>,
 }
 
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Private Code
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 impl GPIOInner {
     /// Create an instance.
@@ -143,10 +145,10 @@ impl GPIOInner {
         // Make an educated guess for a good delay value (Sequence described in the BCM2837
         // peripherals PDF).
         //
-        // - According to wikipedia, the fastest RPi4 clocks around 1.5 GHz.
-        // - The Linux 2837 GPIO driver waits 1 microseconds between the steps.
+        // - According to Wikipedia, the fastest RPi4 clocks around 1.5 GHz.
+        // - The Linux 2837 GPIO driver waits 1 µs between the steps.
         //
-        // so lets try to be on the safe side and default to 2000 cycles, which would equal 1 µs
+        // So lets try to be on the safe side and default to 2000 cycles, which would equal 1 µs
         // would the CPU be clocked at 2 GHz.
         const DELAY: usize = 2000;
 
@@ -176,7 +178,7 @@ impl GPIOInner {
     /// TX to pin 14
     /// RX to pin 15
     pub fn map_pl011_uart(&mut self) {
-        // Select the UART on pins 14 and 15
+        // Select the UART on pins 14 and 15.
         self.registers
             .GPFSEL1
             .modify(GPFSEL1::FSEL15::AltFunc0 + GPFSEL1::FSEL14::AltFunc0);
@@ -190,16 +192,16 @@ impl GPIOInner {
     }
 }
 
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Public Code
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 impl GPIO {
     pub const COMPATIBLE: &'static str = "BCM GPIO";
 
     /// Create an instance.
     ///
-    /// # safety
+    /// # Safety
     ///
     /// - The user must ensure to provide a correct MMIO start address.
     pub const unsafe fn new(mmio_start_addr: usize) -> Self {
@@ -214,9 +216,9 @@ impl GPIO {
     }
 }
 
-//-------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // OS Interface Code
-//-------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 use synchronization::interface::Mutex;
 
 impl driver::interface::DeviceDriver for GPIO {

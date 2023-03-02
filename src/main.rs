@@ -104,7 +104,7 @@
 //!
 //! 1. The kernel's entry point is the function `cpu::boot::arch_boot::_start()`.
 //!     - It is implemented in `src/_arch/__arch_name__/cpu/boot.s`.
-//! 2. Once finished with architectural setup, the arch code calls `kernel_init()`
+//! 2. Once finished with architectural setup, the arch code calls `kernel_init()`.
 
 #![allow(clippy::upper_case_acronyms)]
 #![feature(asm_const)]
@@ -126,8 +126,8 @@ mod synchronization;
 ///
 /// # Safety
 ///
-///  - Only a single core must be active and running in this function.
-///  - The init calls in this function must appear in the correct order.
+/// - Only a single core must be active and running this function.
+/// - The init calls in this function must appear in the correct order.
 unsafe fn kernel_init() -> ! {
     // Initialize the BSP driver subsystem.
     if let Err(x) = bsp::driver::init() {

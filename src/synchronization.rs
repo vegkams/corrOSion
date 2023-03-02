@@ -20,9 +20,9 @@ use core::cell::UnsafeCell;
 pub mod interface {
 
     /// Any object implementing this trait guarantees exclusive access to the data wrapped within
-    /// the mutex for the duration of the provided closure
+    /// the Mutex for the duration of the provided closure.
     pub trait Mutex {
-        /// The type of the data that is wrapped by this mutex
+        /// The type of the data that is wrapped by this mutex.
         type Data;
 
         /// Locks the mutex and grants the closure temporary mutable access to the wrapped data.
@@ -44,9 +44,9 @@ where
     data: UnsafeCell<T>,
 }
 
-//------------------------------------------------------------------------------
-// Public code
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
+// Public Code
+//--------------------------------------------------------------------------------------------------
 
 unsafe impl<T> Send for NullLock<T> where T: ?Sized + Send {}
 unsafe impl<T> Sync for NullLock<T> where T: ?Sized + Send {}
@@ -69,7 +69,7 @@ impl<T> interface::Mutex for NullLock<T> {
 
     fn lock<'a, R>(&'a self, f: impl FnOnce(&'a mut Self::Data) -> R) -> R {
         // In a real lock, there would be code encapsulating this line that ensures that this
-        // mutable reference will only ever be given out once at a time.
+        // mutable reference will ever only be given out once at a time.
         let data = unsafe { &mut *self.data.get() };
 
         f(data)
