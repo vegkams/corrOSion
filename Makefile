@@ -25,7 +25,6 @@ ifeq ($(BSP),rpi3)
 	READELF_BINARY    	   = aarch64-none-elf-readelf
 	LD_SCRIPT_PATH    	   = $(shell pwd)/src/bsp/raspberrypi
 	RUSTC_MISC_ARGS   	   = -C target-cpu=cortex-a53
-	CHAINBOOT_DEMO_PAYLOAD = demo_payload_rpi3.img
 else ifeq ($(BSP),rpi4)
     TARGET            	   = aarch64-unknown-none-softfloat
     KERNEL_BIN        	   = kernel8.img
@@ -37,7 +36,6 @@ else ifeq ($(BSP),rpi4)
     READELF_BINARY    	   = aarch64-none-elf-readelf
     LD_SCRIPT_PATH    	   = $(shell pwd)/src/bsp/raspberrypi
     RUSTC_MISC_ARGS   	   = -C target-cpu=cortex-a72
-	CHAINBOOT_DEMO_PAYLOAD = demo_payload_rpi4.img
 endif
 
 # Export for build.rs
@@ -79,8 +77,8 @@ OBJCOPY_CMD = rust-objcopy \
 	--strip-all			   \
 	-O binary
 
-EXEC_QEMU 		   = $(QEMU_BINARY) -M $(QEMU_MACHINE_TYPE)
-EXEC_TEST_MINIPUSH = ruby tests/chainboot_test.rb
+EXEC_QEMU 		     = $(QEMU_BINARY) -M $(QEMU_MACHINE_TYPE)
+EXEC_TEST_DISPATCH = ruby common/tests/dispatch.rb
 EXEC_MINIPUSH      = ruby common/serial/minipush.rb
 
 
@@ -152,7 +150,7 @@ doc:
 ##--------------------------------------------
 ifeq ($(QEMU_MACHINE_TYPE),)
 
-qemu qemuasm:
+qemu:
 	$(call color_header, "$(QEMU_MISSING_STRING)")
 
 else # QEMU is supported
@@ -160,18 +158,13 @@ else # QEMU is supported
 qemu: $(KERNEL_BIN)
 	$(call color_header, "Launching QEMU")
 	@$(DOCKER_QEMU) $(EXEC_QEMU) $(QEMU_RELEASE_ARGS) -kernel $(KERNEL_BIN)
-
-qemuasm: $(KERNEL_BIN)
-	$(call color_header, "Launchin QEMU with ASM output")
-    @$(DOCKER_QEMU) $(EXEC_QEMU) $(QEMU_RELEASE_ARGS) -kernel $(KERNEL_BIN) -d in_asm
-
 endif
 
 ##--------------------------------------------
 ## Push the kernel to the real HW target
 ##--------------------------------------------
 chainboot: $(KERNEL_BIN)
-	@$(DOCKER_CHAINBOOT) $(EXEC_MINIPUSH) $(DEV_SERIAL) $(CHAINBOOT_DEMO_PAYLOAD)
+	@$(DOCKER_CHAINBOOT) $(EXEC_MINIPUSH) $(DEV_SERIAL) $(KERNEL_BIN)
 
 ##--------------------------------------------
 ## Run clippy
@@ -226,8 +219,7 @@ else # QEMU is supported
 ##-------------------------------------------------------------------------------------------------
 test_boot: $(KERNEL_BIN)
 	$(call color_header, "Boot test - $(BSP)")
-	@$(DOCKER_TEST) $(EXEC_TEST_MINIPUSH) $(EXEC_QEMU) $(QEMU_RELEASE_ARGS) \
-		-kernel $(KERNEL_BIN) $(CHAINBOOT_DEMO_PAYLOAD)
+	@$(DOCKER_TEST) $(EXEC_TEST_DISPATCH) $(EXEC_QEMU) $(QEMU_RELEASE_ARGS) -kernel $(KERNEL_BIN)
 
 test: test_boot
 
