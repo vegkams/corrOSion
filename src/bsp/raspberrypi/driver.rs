@@ -56,6 +56,13 @@ fn driver_gpio() -> Result<(), &'static str> {
 /// # Safety
 ///
 /// See child function calls.
+///
+/// On `AArch64`, [`AtomicBool::load`] and [`AtomicBool::store`] are lowered to ordinary
+/// load and store instructions. They are therefore safe to use even with MMU + caching
+/// deactivated.
+///
+/// [`AtomicBool::load`]: core::sync::atomic::AtomicBool::load
+/// [`AtomicBool::store`]: core::sync::atomic::AtomicBool::store
 pub unsafe fn init() -> Result<(), &'static str> {
     static INIT_DONE: AtomicBool = AtomicBool::new(false);
     if INIT_DONE.load(Ordering::Relaxed) {
